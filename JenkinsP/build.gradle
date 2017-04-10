@@ -29,6 +29,6 @@ dependencies {
 
 project.description = "Jenkins"
 
-task inicio << {
+task inicio(type: Wrapper) {
 	println "Corriendo una tarea desde "+project.description
 }
