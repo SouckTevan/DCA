@@ -10,11 +10,11 @@
 apply plugin: 'java-library'
 
 plugins {
-    id 'de.undercouch.download' version '3.2.0' apply false
+    id 'de.undercouch.download' version '3.2.0'
 }
 
 apply plugin: 'de.undercouch.download'
-import de.undercouch.gradle.tasks.download.Download
+
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.
@@ -31,6 +31,8 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+
+    classpath 'de.undercouch:gradle-download-task:3.2.0'
 }
 
 //project.description = "C:/Prueba/T_README.txt"
@@ -45,10 +47,12 @@ task inicio(type: Wrapper) {
 	println "Corriendo una tarea desde Jenkins"
 }
 
+import de.undercouch.gradle.tasks.download.Download
+
 task downloadFile(type: Download) {
     src 'https://github.com/SouckTevan/DCA/T_README.txt'
-    dest buildDir
-    overwrite true
+    dest 'C:/Prueba/'
+    //overwrite true
 }
 
-defaultTasks 'downloadFile'
+//defaultTasks 'downloadFile'
