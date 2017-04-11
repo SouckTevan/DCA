@@ -55,7 +55,7 @@ task copy << {
     //overwrite true
     from 'src/main/doc/ArchivoP.txt'
     println 'Copy File...'
-    into 'src/main/new/ArchivoP.txt'
+    into 'src/main/java/ArchivoP.txt'
     //include ""
 }
 
