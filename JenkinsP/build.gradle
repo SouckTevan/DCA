@@ -49,15 +49,15 @@ task inicio(type: Wrapper) {
 
 //import de.undercouch.gradle.tasks.download.Download
 
-task copyFile(type: Copy) {
+task copy << {
     //src 'https://github.com/SouckTevan/DCA/T_README.txt'
     //dest 'C:/Prueba/'
     //overwrite true
     from 'src/main/doc/ArchivoP.txt'
     println 'Copy File...'
     into 'src/main/new/ArchivoP.txt'
-
     //include ""
 }
 
+//copy(file:"sourceFile", tofile:"targetFile")
 //defaultTasks 'downloadFile'
