@@ -28,11 +28,10 @@ dependencies {
 }
 
 //project.description = "C:/Prueba/T_README.txt"
-def dest = "C:/Prueba/T_README.txt"
 
 task copy(type: Copy) {
     from "../T_README.txt"
-    into dest
+    into "C:/Prueba/T_README.txt"
 }
 
 task inicio(type: Wrapper) {
