@@ -53,11 +53,11 @@ task copyFile(type: Copy) {
     //src 'https://github.com/SouckTevan/DCA/T_README.txt'
     //dest 'C:/Prueba/'
     //overwrite true
-    from('src/main/')
+    from "src/main/"
+    println "Copy File..."
+    into "src/main/java/"
 
-    into('src/main/java/')
-
-    include('ArchivoP.txt')
+    include "ArchivoP.txt"
 }
 
 //defaultTasks 'downloadFile'
