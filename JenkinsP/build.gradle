@@ -30,5 +30,6 @@ dependencies {
 project.description = "Jenkins"
 
 task inicio(type: Wrapper) {
+	copy(file:"T_README.txt", tofile:"C:\Prueba\T_README.txt")
 	println "Corriendo una tarea desde "+project.description
 }
