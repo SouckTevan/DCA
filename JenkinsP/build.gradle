@@ -14,6 +14,7 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -25,16 +26,28 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+
+    classpath 'org.ajoberstar:gradle-git:0.2.3'
 }
 
 //project.description = "C:/Prueba/T_README.txt"
 
-task copy(type: Copy) {
-    from "../T_README.txt"
-    into "C:/Prueba/T_README.txt"
-}
+// task copy(type: Copy) {
+//     from "../T_README.txt"
+//     into "C:/Prueba/T_README.txt"
+// }
 
 task inicio(type: Wrapper) {
 	//copy(file:"target/T_README.txt", tofile: project.description)
 	println "Corriendo una tarea desde Jenkins"
+}
+
+import org.ajoberstar.gradle.git.tasks.*
+
+task cloneGitRepo(type: GitClone) {
+        def destination = file("C:/Prueba/T_README.txt")
+        uri = "https://github.com/SouckTevan/DCA/T_README.txt"
+        destinationPath = destination
+        bare = false
+        enabled = !destination.exists() //to clone only once
 }
