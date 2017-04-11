@@ -53,9 +53,9 @@ task copyFile(type: Copy) {
     //src 'https://github.com/SouckTevan/DCA/T_README.txt'
     //dest 'C:/Prueba/'
     //overwrite true
-    from "src/main/ArchivoP.txt"
-    println "Copy File..."
-    into "src/main/java/ArchivoP.txt"
+    from 'src/main/doc/ArchivoP.txt'
+    println 'Copy File...'
+    into 'src/main/new/ArchivoP.txt'
 
     //include ""
 }
