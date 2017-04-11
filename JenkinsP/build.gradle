@@ -8,14 +8,17 @@
 
 // Apply the java-library plugin to add support for Java Library
 apply plugin: 'java-library'
-apply plugin: 'org.ajoberstar:gradle-git:0.2.3'
 
+plugins {
+    id 'de.undercouch.download' version '3.2.0'
+}
+
+import de.undercouch.gradle.tasks.download.Download
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
-    mavenCentral()
 }
 
 dependencies {
@@ -27,8 +30,6 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
-
-    classpath 'org.ajoberstar:gradle-git:0.2.3'
 }
 
 //project.description = "C:/Prueba/T_README.txt"
@@ -43,12 +44,10 @@ task inicio(type: Wrapper) {
 	println "Corriendo una tarea desde Jenkins"
 }
 
-import org.ajoberstar.gradle.git.tasks.*
-
-task cloneGitRepo(type: GitClone) {
-        def destination = file("C:/Prueba/T_README.txt")
-        uri = "https://github.com/SouckTevan/DCA/T_README.txt"
-        destinationPath = destination
-        bare = false
-        enabled = !destination.exists() //to clone only once
+task downloadFile(type: Download) {
+    src 'https://github.com/SouckTevan/DCA/T_README.txt'
+    dest buildDir
+    overwrite true
 }
+
+defaultTasks 'downloadFile'
