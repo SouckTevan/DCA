@@ -27,15 +27,15 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-//project.description = "C:\Prueba\T_README.txt"
+//project.description = "C:/Prueba/T_README.txt"
 def dest = "C:/Prueba/T_README.txt"
 
 task copy(type: Copy) {
-    from "T_README.txt"
+    from "../T_README.txt"
     into dest
 }
 
 task inicio(type: Wrapper) {
-	//copy(file:"T_README.txt", tofile: project.description)
+	//copy(file:"target/T_README.txt", tofile: project.description)
 	println "Corriendo una tarea desde Jenkins"
 }
