@@ -43,8 +43,9 @@ dependencies {
 // }
 
 task inicio(type: Wrapper) {
-	//copy(file:"target/T_README.txt", tofile: project.description)
-	println 'Corriendo una tarea desde Jenkins'
+    //copy(file:"target/T_README.txt", tofile: project.description)
+    println 'Corriendo una tarea desde Jenkins'
+    new File('src/main/conf').mkdirs()
 }
 
 //import de.undercouch.gradle.tasks.download.Download
@@ -55,7 +56,7 @@ task copyFile(type: Copy){
     //overwrite true
     from 'src/main/doc/ArchivoP.txt'
     println 'Copy File...'
-    into 'src/main/java/new/'
+    into 'src/main/conf/'
     //include ""
     //copy(file:"src/main/doc/ArchivoP.txt", tofile:"src/main/java/ArchivoP.txt")
 }
