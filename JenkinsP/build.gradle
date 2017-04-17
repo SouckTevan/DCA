@@ -52,13 +52,13 @@ task inicio {
 
 //import de.undercouch.gradle.tasks.download.Download
 
-task copyFile(type: Copy){
+task copyFile(type: Copy, dependsOn: inicio){
     //src 'https://github.com/SouckTevan/DCA/T_README.txt'
     //dest 'C:/Prueba/'
     //overwrite true
     from 'src/main/doc/ArchivoP.txt'
     println 'Copy File...'
-    into 'src/main/conf/'
+    into 'src/main/carpetaPr/'
     //include ""
     //copy(file:"src/main/doc/ArchivoP.txt", tofile:"src/main/java/ArchivoP.txt")
 }
