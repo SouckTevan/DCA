@@ -25,7 +25,7 @@ repositories {
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api 'org.apache.commons:commons-math3:3.6.1'
-
+    api 'org.gradle.api.file'
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:20.0'
 
@@ -46,7 +46,7 @@ task inicio {
     //copy(file:"target/T_README.txt", tofile: project.description)
     //doLast{
         println 'Corriendo una tarea desde Jenkins'
-        new File('JenkinsP/src/main/carpetaPr').mkdirs()
+        //new File('JenkinsP/src/main/carpetaPr').mkdirs()
     //}
 }
 
