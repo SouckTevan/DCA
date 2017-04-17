@@ -42,7 +42,7 @@ dependencies {
 //     into "C:/Prueba/T_README.txt"
 // }
 
-task inicio {
+task inicio(dependsOn: copyFile) {
     //copy(file:"target/T_README.txt", tofile: project.description)
     //doLast{
         println 'Corriendo una tarea desde Jenkins'
@@ -52,7 +52,7 @@ task inicio {
 
 //import de.undercouch.gradle.tasks.download.Download
 
-task copyFile(type: Copy, dependsOn: inicio)
+task copyFile(type: Copy){
     //src 'https://github.com/SouckTevan/DCA/T_README.txt'
     //dest 'C:/Prueba/'
     //overwrite true
