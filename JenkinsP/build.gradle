@@ -42,7 +42,7 @@ dependencies {
 //     into "C:/Prueba/T_README.txt"
 // }
 
-task inicio << {
+task inicio {
     //copy(file:"target/T_README.txt", tofile: project.description)
     doLast{
         println 'Corriendo una tarea desde Jenkins'
