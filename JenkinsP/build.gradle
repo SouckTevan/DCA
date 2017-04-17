@@ -46,7 +46,7 @@ task inicio {
     //copy(file:"target/T_README.txt", tofile: project.description)
     //doLast{
         println 'Corriendo una tarea desde Jenkins'
-        new File('src/main/carpetaPr').mkdirs()
+        new File('JenkinsP/src/main/carpetaPr').mkdirs()
     //}
 }
 
