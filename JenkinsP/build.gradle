@@ -52,14 +52,14 @@ task inicio {
 
 //import de.undercouch.gradle.tasks.download.Download
 
-task copyFile(type: Copy, dependsOn: inicio){
+task copyFile(type: Copy){
     //src 'https://github.com/SouckTevan/DCA/T_README.txt'
     //dest 'C:/Prueba/'
     //overwrite true
     //doFirst{
         from 'JenkinsP/src/main/doc/ArchivoP.txt'
-        //println 'Copy File...'
         into 'JenkinsP/src/main/carpetaPr/'
+        println 'Copy File...'
     //}
     //include ""
     //copy(file:"src/main/doc/ArchivoP.txt", tofile:"src/main/java/ArchivoP.txt")
