@@ -52,7 +52,7 @@ task inicio {
 
 //import de.undercouch.gradle.tasks.download.Download
 
-task copyFile(type: Copy, despendsOn: inicio){
+task copyFile(type: Copy, dependsOn: inicio){
     //src 'https://github.com/SouckTevan/DCA/T_README.txt'
     //dest 'C:/Prueba/'
     //overwrite true
