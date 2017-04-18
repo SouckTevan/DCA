@@ -58,7 +58,7 @@ task copyFile(type: Copy){
     //overwrite true
     //doFirst{
         from 'JenkinsP/src/main/doc'
-        into 'JenkinsP/src/main/carpetaPru/'
+        into 'JenkinsP/src/main/carpetaPru'
         println 'Copy File...'
     //}
     //include ""
