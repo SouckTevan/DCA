@@ -1,0 +1,44 @@
+apply plugin: 'java'
+apply plugin: 'war'
+
+// dependencies {
+//     def tomcatVersion = '8.5.14'
+//     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+//             "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
+//     tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+//         exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+//     }
+// }
+
+task buildProject(type:Exec) {
+    
+	workingDir 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWebClient/'
+
+    commandLine 'cmd execute', '/c', 'ng build --prod --aot=false'
+    
+    standardOutput = new ByteArrayOutputStream()
+    ext.output = {
+        return standardOutput.toString()
+    }
+}
+
+task copyProject(type: Copy, dependsOn: 'buildProject') {
+	from 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWebClient/dist/'
+	// into 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/WebContent/'
+	into 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba/'
+}
+
+task iniciar(type: War, dependsOn: 'copyProject') {
+// war << {
+    // war {
+        // war {
+        from 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/WebContent/' // adds a file-set to the root of the archive
+        webInf { from 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/build/' } // adds a file-set to the WEB-INF dir.
+        // classpath fileTree('additionalLibs') // adds a file-set to the WEB-INF/lib dir.
+        // classpath configurations.moreLibs // adds a configuration to the WEB-INF/lib dir.
+        // webXml = file('D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/WebContent/WEB-INF/web.xml') // copies a file to WEB-INF/web.xml
+	   archiveName 'ViasTraficos.war'
+    // }
+    // }
+}
+// }
