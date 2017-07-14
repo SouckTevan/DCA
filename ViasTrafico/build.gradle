@@ -52,8 +52,8 @@ task generateWar(type: War, dependsOn: 'copyProject') {
 
 // ----- Eliminar el directorio dist ------
 task deleteDist(type: Delete) {
-  delete desAdminWebClient+'dist'
-  followSymlinks = true
+    delete desAdminWebClient+'/dist'
+    followSymlinks = true
 }
 
 // ----- Copiar el War Generado ---
