@@ -1,6 +1,18 @@
 apply plugin: 'java'
 apply plugin: 'war'
 
+buildscript {
+  repositories { 
+    mavenCentral() 
+  }
+  dependencies { classpath 'org.ajoberstar:gradle-git:0.2.3' }
+  dependencies {
+    classpath "gradle.plugin.de.qaware.seu.as.code:seuac-svn-plugin:2.1.1"
+  }
+}
+
+import org.ajoberstar.gradle.git.tasks.*
+
 // ------- Variables Globales -----
 def desAdminWeb = 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb'
 def desAdminWebClient = 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWebClient'
@@ -44,7 +56,7 @@ task generateWar(type: War, dependsOn: 'copyProject') {
         if (copyDetails.path == 'index.html') {
             println copyDetails
             filter { String line ->
-                line.replace('<base href="/">', '<base href="/ViasTraficos/">')
+                line.replace('<base href="/">', '<base href="/ViasTraficosWeb/">')
             }
         }
     }
@@ -63,3 +75,18 @@ task go(type: Copy, dependsOn: 'generateWar') {
 
     into 'C:/apache-tomcat-8.5.14/webapps/'
 }
+
+// ---- Clonar Repositorio Git -------
+task cloneGitRepo(type: GitClone) {
+    def destination = file("C:/Users/ESTEBAN/Desktop/Repo/")
+    // uri = "git@github.com:SouckTevan/DCA.git"
+    uri = "https://github.com/SouckTevan/DCA.git"
+    destinationPath = destination
+    // dir = destination
+    bare = false
+    // enabled = !destination.exists() //to clone only once
+    // Grgit.clone(dir: file('C:/Users/ESTEBAN/Desktop/Repo/'), uri: 'git@github.com:SouckTevan/DCA.git')
+}
+
+// ---- Clonar repositorio SVN ------
+// http://inmdecvd02.suranet.com:4747/svn/CCM
