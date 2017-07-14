@@ -1,20 +1,16 @@
 apply plugin: 'java'
 apply plugin: 'war'
 
-// dependencies {
-//     def tomcatVersion = '8.5.14'
-//     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
-//             "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
-//     tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
-//         exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
-//     }
-// }
+// ------- Variables Globales -----
+def desAdminWeb = 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb'
+def desAdminWebClient = 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWebClient'
 
+// ------- Compilar Proyecto -----
 task buildProject(type:Exec) {
-    
-	workingDir 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWebClient/'
 
-    commandLine 'cmd execute', '/c', 'ng build --prod --aot=false'
+	workingDir desAdminWebClient+'/'
+
+    commandLine 'cmd', '/c', 'ng build --prod --aot=false'
     
     standardOutput = new ByteArrayOutputStream()
     ext.output = {
@@ -22,23 +18,48 @@ task buildProject(type:Exec) {
     }
 }
 
+// ------ Copiar el proyecto ------
 task copyProject(type: Copy, dependsOn: 'buildProject') {
-	from 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWebClient/dist/'
-	// into 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/WebContent/'
-	into 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba/'
+
+    from desAdminWebClient+'/dist/'
+
+	into desAdminWeb+'/WebContent/'
 }
 
-task iniciar(type: War, dependsOn: 'copyProject') {
-// war << {
-    // war {
-        // war {
-        from 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/WebContent/' // adds a file-set to the root of the archive
-        webInf { from 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/build/' } // adds a file-set to the WEB-INF dir.
-        // classpath fileTree('additionalLibs') // adds a file-set to the WEB-INF/lib dir.
-        // classpath configurations.moreLibs // adds a configuration to the WEB-INF/lib dir.
-        // webXml = file('D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/WebContent/WEB-INF/web.xml') // copies a file to WEB-INF/web.xml
-	   archiveName 'ViasTraficos.war'
-    // }
-    // }
+// ------ Generar War -------------
+task generateWar(type: War, dependsOn: 'copyProject') {
+
+    from desAdminWeb+'/WebContent/' // adds a file-set to the root of the archive
+    webInf { from desAdminWeb+'/build/' } // adds a file-set to the WEB-INF dir.
+    // classpath fileTree('additionalLibs') // adds a file-set to the WEB-INF/lib dir.
+    // classpath configurations.moreLibs // adds a configuration to the WEB-INF/lib dir.
+    // webXml = file('D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/WebContent/WEB-INF/web.xml') // copies a file to WEB-INF/web.xml
+    archiveName 'ViasTraficos.war'
+
+    // ------ Guardar el war -------------
+    destinationDir = file("D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba/")
+
+    // ------ Cambiar el basePath del index ------
+    eachFile { copyDetails ->
+        if (copyDetails.path == 'index.html') {
+            println copyDetails
+            filter { String line ->
+                line.replace('<base href="/">', '<base href="/ViasTraficos/">')
+            }
+        }
+    }
 }
-// }
+
+// ----- Eliminar el directorio dist ------
+task deleteDist(type: Delete) {
+  delete desAdminWebClient+'dist'
+  followSymlinks = true
+}
+
+// ----- Copiar el War Generado ---
+task go(type: Copy, dependsOn: 'generateWar') {
+
+    from 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba/'
+
+    into 'C:/apache-tomcat-8.5.14/webapps/'
+}
