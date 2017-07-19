@@ -1,30 +1,63 @@
-apply plugin: 'java'
-apply plugin: 'war'
-
 buildscript {
   repositories { 
-    mavenCentral() 
+    mavenCentral()
+    maven {
+        url 'https://dl.bintray.com/seu-as-code/gradle-plugins'
+    } 
   }
-  dependencies { classpath 'org.ajoberstar:gradle-git:0.2.3' }
-  dependencies {
-    classpath "gradle.plugin.de.qaware.seu.as.code:seuac-svn-plugin:2.1.1"
+  dependencies { 
+    classpath 'org.ajoberstar:gradle-git:0.2.3' 
   }
+}
+
+plugins {
+  id "at.bxm.svntools" version "2.2.1"
 }
 
 import org.ajoberstar.gradle.git.tasks.*
 
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'at.bxm.svntools'
+
 // ------- Variables Globales -----
 def desAdminWeb = 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb'
 def desAdminWebClient = 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWebClient'
+// version = 1.1
 
-// ------- Compilar Proyecto -----
-task buildProject(type:Exec) {
+// ------- Compilar -----------
+// sourceSets {
+//    main {
+//       java {
+//          srcDir desAdminWeb+'/src'
+//       }
+//    }
+// }
 
+// task compile(type: JavaCompile) { 
+//     source = fileTree(dir: desAdminWeb+'/src/', include: '**/*.java')
+//     destinationDir = file('D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/PruebaCompilar/')
+//     // destinationDir = file(desAdminWeb+'/build/classes/com/')
+//     sourceCompatibility = '1.8'
+//     targetCompatibility = '1.8'
+//     // dependencyCacheDir = ???
+//     classpath = fileTree(dir: desAdminWeb+'/WebContent/WEB-INF/lib/', include: '*.jar')
+// }
+
+// ------- Svn Credentials --------
+svntools {
+    username = 'diegmuru'
+    password = 'dcasoluciones2017'
+}
+
+// ------- Compilar Proyecto ------
+task buildProject(type:Exec, dependsOn: 'cleanDir') {
 	workingDir desAdminWebClient+'/'
 
     commandLine 'cmd', '/c', 'ng build --prod --aot=false'
-    
+
     standardOutput = new ByteArrayOutputStream()
+
     ext.output = {
         return standardOutput.toString()
     }
@@ -33,13 +66,23 @@ task buildProject(type:Exec) {
 // ------ Copiar el proyecto ------
 task copyProject(type: Copy, dependsOn: 'buildProject') {
 
-    from desAdminWebClient+'/dist/'
+    // ------ Cambiar el basePath del index ------
+    eachFile { copyDetails ->
+        if (copyDetails.path == 'index.html') {
+            println copyDetails
+            filter { String line ->
+                line.replace('<base href="/">', '<base href="/CCMAdminWeb/">')
+            }
+        }
+    }
 
+    from desAdminWebClient+'/dist/'
+    
 	into desAdminWeb+'/WebContent/'
 }
 
 // ------ Generar War -------------
-task generateWar(type: War, dependsOn: 'copyProject') {
+task generateWar(type: War, dependsOn: 'deleteDist') {
 
     from desAdminWeb+'/WebContent/' // adds a file-set to the root of the archive
     webInf { from desAdminWeb+'/build/' } // adds a file-set to the WEB-INF dir.
@@ -49,22 +92,14 @@ task generateWar(type: War, dependsOn: 'copyProject') {
     archiveName 'ViasTraficos.war'
 
     // ------ Guardar el war -------------
-    destinationDir = file("D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba/")
-
-    // ------ Cambiar el basePath del index ------
-    eachFile { copyDetails ->
-        if (copyDetails.path == 'index.html') {
-            println copyDetails
-            filter { String line ->
-                line.replace('<base href="/">', '<base href="/ViasTraficosWeb/">')
-            }
-        }
-    }
+    destinationDir = file("D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba/") 
 }
 
 // ----- Eliminar el directorio dist ------
-task deleteDist(type: Delete) {
+task deleteDist(type: Delete, dependsOn: 'copyProject') {
+
     delete desAdminWebClient+'/dist'
+
     followSymlinks = true
 }
 
@@ -77,16 +112,26 @@ task go(type: Copy, dependsOn: 'generateWar') {
 }
 
 // ---- Clonar Repositorio Git -------
-task cloneGitRepo(type: GitClone) {
-    def destination = file("C:/Users/ESTEBAN/Desktop/Repo/")
-    // uri = "git@github.com:SouckTevan/DCA.git"
-    uri = "https://github.com/SouckTevan/DCA.git"
-    destinationPath = destination
-    // dir = destination
-    bare = false
-    // enabled = !destination.exists() //to clone only once
-    // Grgit.clone(dir: file('C:/Users/ESTEBAN/Desktop/Repo/'), uri: 'git@github.com:SouckTevan/DCA.git')
-}
+// task cloneGitRepo(type: GitClone) {
+
+//     def destination = file("C:/Users/ESTEBAN/Desktop/RepoPrueba")
+
+//     uri = 'https://github.com/SouckTevan/DCA.git'
+//     // uri = 'git@github.com:SouckTevan/DCA.git'
+//     destinationPath = destination
+
+//     bare = false
+// }
 
 // ---- Clonar repositorio SVN ------
-// http://inmdecvd02.suranet.com:4747/svn/CCM
+task export(type: at.bxm.gradleplugins.svntools.tasks.SvnExport) {
+
+    svnUrl = "http://inmdecvd02.suranet.com:4747/svn/CCM/CCMAdminWeb/trunk"
+
+    targetDir = "D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba"
+}
+
+// ---- Borrar todos los archivos del WebContent -----
+task cleanDir(type: Delete, dependsOn: 'export') {
+    delete fileTree(dir: desAdminWeb+"/WebContent", exclude: "META-INF, WEB-INF")
+}
