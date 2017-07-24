@@ -4,9 +4,22 @@ buildscript {
     maven {
         url 'https://dl.bintray.com/seu-as-code/gradle-plugins'
     } 
+    // jcenter()
   }
   dependencies { 
-    classpath 'org.ajoberstar:gradle-git:0.2.3' 
+    // classpath 'org.ajoberstar:gradle-git:0.2.3' 
+
+    // compile 'org.slf4j:slf4j-api:1.7.12'
+    // classpath 'org.slf4j:slf4j-api:1.7.12'
+        // compile 'log4j:log4j:1.2.17'
+       // testCompile 'junit:junit:4.11'
+       // integrationTestCompile 'org.assertj:assertj-core:3.0.0'
+    // testCompile('junit:junit:4.12')
+
+    // compile fileTree(dir: 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/WebContent/WEB-INF/lib', include: ['*.jar'])
+
+    // testCompile 'junit:junit:4.12'
+  // classpath = fileTree(dir: 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb/WebContent/WEB-INF/lib', include: ['*.jar'])
   }
 }
 
@@ -23,25 +36,34 @@ apply plugin: 'at.bxm.svntools'
 // ------- Variables Globales -----
 def desAdminWeb = 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWeb'
 def desAdminWebClient = 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/CCMAdminWebClient'
-// version = 1.1
 
 // ------- Compilar -----------
 // sourceSets {
-//    main {
-//       java {
-//          srcDir desAdminWeb+'/src'
-//       }
-//    }
+//     main {
+//         java {
+//             srcDir desAdminWeb+'/src'
+//         }
+//     }
+//     integrationTest {
+//         test {
+//             java {
+//                 compileClasspath += main.output + test.output
+//                 runtimeClasspath += main.output + test.output
+//                 srcDir file(desAdminWeb+'/src/test/')
+//             }
+//             resources.srcDir file('src/integration-test/resources')
+//         }
+//     }
 // }
-
-// task compile(type: JavaCompile) { 
-//     source = fileTree(dir: desAdminWeb+'/src/', include: '**/*.java')
-//     destinationDir = file('D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/PruebaCompilar/')
+// task compile(type: JavaCompile) {
+//     source = fileTree(dir: desAdminWeb+'/src', include: ['**/*.java'])
+//     classpath = fileTree(dir: desAdminWeb+'/WebContent/WEB-INF/lib', include: ['**/*.jar'])
 //     // destinationDir = file(desAdminWeb+'/build/classes/com/')
+//     version = '1.0.0'
 //     sourceCompatibility = '1.8'
 //     targetCompatibility = '1.8'
 //     // dependencyCacheDir = ???
-//     classpath = fileTree(dir: desAdminWeb+'/WebContent/WEB-INF/lib/', include: '*.jar')
+//     destinationDir = file('D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/PruebaCompilar/')
 // }
 
 // ------- Svn Credentials --------
@@ -92,7 +114,7 @@ task generateWar(type: War, dependsOn: 'deleteDist') {
     archiveName 'ViasTraficos.war'
 
     // ------ Guardar el war -------------
-    destinationDir = file("D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba/") 
+    destinationDir = file("D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba/war/") 
 }
 
 // ----- Eliminar el directorio dist ------
@@ -106,7 +128,7 @@ task deleteDist(type: Delete, dependsOn: 'copyProject') {
 // ----- Copiar el War Generado ---
 task go(type: Copy, dependsOn: 'generateWar') {
 
-    from 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba/'
+    from 'D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba/war/ViasTraficos.war'
 
     into 'C:/apache-tomcat-8.5.14/webapps/'
 }
@@ -124,7 +146,7 @@ task go(type: Copy, dependsOn: 'generateWar') {
 // }
 
 // ---- Clonar repositorio SVN ------
-task export(type: at.bxm.gradleplugins.svntools.tasks.SvnExport) {
+task export(type: at.bxm.gradleplugins.svntools.tasks.SvnExport, dependsOn: 'cleanPrueba') {
 
     svnUrl = "http://inmdecvd02.suranet.com:4747/svn/CCM/CCMAdminWeb/trunk"
 
@@ -133,5 +155,12 @@ task export(type: at.bxm.gradleplugins.svntools.tasks.SvnExport) {
 
 // ---- Borrar todos los archivos del WebContent -----
 task cleanDir(type: Delete, dependsOn: 'export') {
-    delete fileTree(dir: desAdminWeb+"/WebContent", exclude: "META-INF, WEB-INF")
+    delete fileTree(dir: desAdminWeb+"/WebContent").matching {
+            exclude "META-INF", "WEB-INF"
+        }
+}
+
+// ---- Borrar carpeta Prueba ------
+task cleanPrueba(type: Delete){
+    delete "D:/DCA/Desarrollo/Programacion/workspaceNeon3_64/Prueba"
 }
